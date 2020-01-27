@@ -282,21 +282,5 @@ def cmd_reset(message):
     dbworker.set_state(message.chat.id, config.States.S_BEFORE_START.value)
 
 
-@bot.message_handler(commands=['tst'])
-def find_file_ids(message: Message):
-    for file in os.listdir(r"D:\\Projects_py\\telegBot\\music"):
-        if file.split('.')[-1] == 'ogg':
-            f = open('music\\'+file, 'rb')
-            msg = bot.send_voice(message.chat.id, f, None) # загружаю музыку на сервер Tg через бота
-            bot.send_message(message.chat.id, msg.voice.file_id, disable_notification=True, reply_to_message_id=msg.message_id) # получаю ответ от бота в виде file_id
-            name_parts = file.split('_')
-            # print(msg.voice.file_id)
-            # print(name_parts[1])
-            # print(random.randrange(10, 40, 10))
-            # print(name_parts[2].split('.')[0])
-            SQLighter(config.database_name).insert_row_about_note(msg.voice.file_id, name_parts[1], random.randrange(10, 50, 5), name_parts[2].split('.')[0])
-        time.sleep(3) # приостанавливаю выполнение программы на заданное время (сек)
-
-
 if __name__ == '__main__':
     bot.infinity_polling() # none_stop=True - опрашивать всегда, interval - между опросами bot.infinity_polling() - можно попробовать так
