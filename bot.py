@@ -22,7 +22,6 @@ bot = telebot.TeleBot(config.TOKEN)
 @bot.message_handler(commands=['start'])
 def cmd_start(message: Message):
     state = dbworker.get_current_state(message.chat.id)
-    print(state)
     if state == config.States.S_ENTER_NAME.value:
         bot.send_message(message.chat.id, "Кажется, кто-то обещал отправить своё имя, но так и не сделал этого :( Жду...")
     elif state == config.States.S_ENTER_PERFORMER.value:
@@ -56,8 +55,6 @@ def cmd_start(message: Message):
                 utils.set_user_callback(message.chat.id, *category, note_price_ind, sign=True)
                 keyboard_n = utils.generate_inline_markup(label_text, note_price_ind)
                 utils.set_user_cats_and_notes(message.chat.id, *category, attincat=0, note_kb=keyboard_n)
-                print("Будет разыграна категория {} с нотами: {}{}{}{}".format(*category, *note_price_ind))
-                print()
             bot.send_message(message.chat.id, f"{utils.choice_random_message('1.6')}", reply_markup=keyboard_c)
             dbworker.set_state(message.chat.id, config.States.S_ENTER_CATEGORY.value)
 
@@ -187,7 +184,7 @@ def play_attempt(call: CallbackQuery):
 
 
 # Если пользователь дал ответ, нажав на кнопку клавы или написав текст
-@bot.message_handler(func=lambda message: dbworker.get_current_state(message.chat.id) == config.States.S_ENTER_ANSWER.value, content_types=['text']) # фиксируем факт прихода сообщения, если его нет, значит человек не играет (думает над ответом например)
+@bot.message_handler(func=lambda message: dbworker.get_current_state(message.chat.id) == config.States.S_ENTER_ANSWER.value, content_types=['text'])
 def check_answer(message):
     # Удаляем выбранный вариант ответа
     bot.delete_message(message.chat.id, message.message_id)
@@ -274,13 +271,5 @@ def cmd_rules(message):
     bot.send_message(message.chat.id, config.rules_text, parse_mode='HTML')
 
 
-# По команде /reset будем сбрасывать состояния, возвращаясь к началу диалога
-@bot.message_handler(commands=["rst"])
-def cmd_reset(message):
-    utils.delete_for_reset(message.chat.id)
-    bot.send_message(message.chat.id, "Что ж, начнём по-новой. Выберите команду /start")
-    dbworker.set_state(message.chat.id, config.States.S_BEFORE_START.value)
-
-
 if __name__ == '__main__':
-    bot.infinity_polling() # none_stop=True - опрашивать всегда, interval - между опросами bot.infinity_polling() - можно попробовать так
+    bot.infinity_polling()
