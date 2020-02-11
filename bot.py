@@ -270,6 +270,18 @@ def cmd_help(message):
 def cmd_rules(message):
     bot.send_message(message.chat.id, config.rules_text, parse_mode='HTML')
 
+# Загрузка файлов на сервер Tg & получение file_id треков
+@bot.message_handler(commands=['test'])
+def find_file_ids(message: Message):
+    for file in os.listdir(r"D:\\Projects_py\\telegBot\\music"):
+        if file.split('.')[-1] == 'ogg':
+            f = open('music\\'+file, 'rb')
+            msg = bot.send_voice(message.chat.id, f, None)
+            bot.send_message(message.chat.id, msg.voice.file_id, disable_notification=True, reply_to_message_id=msg.message_id)
+            name_parts = file.split('_')
+            SQLighter(config.database_name).insert_row_about_note(msg.voice.file_id, name_parts[1], random.randrange(10, 50, 5), name_parts[2].split('.')[0])
+        time.sleep(3)
+
 
 if __name__ == '__main__':
     bot.infinity_polling()
