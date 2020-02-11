@@ -1,3 +1,4 @@
+#!/home/pardo/tgbot/venv/bin/python
 # -*- coding: utf-8 -*-
 import os
 import random
