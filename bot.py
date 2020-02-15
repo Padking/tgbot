@@ -1,5 +1,6 @@
 #!/home/pardo/tgbot/venv/bin/python
 # -*- coding: utf-8 -*-
+# Это пробный камент
 import os
 import random
 import sqlite3
