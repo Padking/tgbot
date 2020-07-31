@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# Камент
 import random
 import shelve
 from telebot import types
